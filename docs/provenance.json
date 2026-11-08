@@ -1,0 +1,312 @@
+{
+  "source": "http://magicglory.com/",
+  "captured_at": "2026-11-08",
+  "method": "REA capture_browser_scenario; read-only public GET/navigation",
+  "pages": 415,
+  "public_posts": 364,
+  "local_assets": 861,
+  "local_asset_bytes": 299301981,
+  "local_missing_assets": [
+    {
+      "path": "/data/file/4_1/1888912374_FKBsC4OE_KakaoTalk_20180728_2106449981.jpg",
+      "observed_status": 404
+    },
+    {
+      "path": "/data/file/4_1/1888912374_1UQRNzVu_Resized_20180516_145834_39628129.jpg",
+      "observed_status": 404
+    }
+  ],
+  "records": [
+    {
+      "evidence_id": "ev_034d90bd62c38c4a4f52bc4e571ad2dd8de52411967a319ade2f903638d1071b",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 71,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_0c058903ac6a078b38c9e165479949b3e59f8c0ec3ccb35838d12e1117cb1768",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 40,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_1eeb1598b89289e19a47a0d4dd8245d1a7b1d051de8c073839ac46473cb3ef0e",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 40,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_1fe43d0ba064dc0b7122614ba319c4d59a55fbc96869f9732b06e3a82ed4498a",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 39,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_221189b6014f3426443d0e71103fb5889a6681802767719b7bd3e1f6d7a30d11",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 71,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_25e9df68a3f672d6a70a572149b8c164a62a4618ead6d9c2ca8387c4d40d1454",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 51,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_288ab9114e2e02a869f802477bf61fb4c22a4e89531f80f7421d02358dfea0d6",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 40,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_2cc055077bc4c5e21934303852ec14199ed301845a96748ef81decc58ce4d69e",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 40,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_2ec0c872b2f51f61edfa3d6fbb7b91e94125cf07ed5bed88f0f0174b1a8b95e1",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 2,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_40a1fab86f5d8fb372a8e6947aeb23df76b3df4a1280f4b8b2a3483398951206",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 41,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_4330602ec77b891a5f8d0cbd05050d112b479453a9ecead9da02432215b251a3",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 2,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_4969b5466f14c14b1b8beea0c8a62ff47b0546e8275a4211b4fc5dcefef22fae",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 71,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_4ff2b3687cd44f430e581f078a31180f043b58cbaa378c5575593239c5daf1a0",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 22,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_51fd55bbd2697f9fb73fcaf0714b5882526d471878edf933641952b830905f20",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 40,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_55d805de66dbe2a19b6aacdb0ddcf0fdca2e15e5265e3c61f0ad167abf1b15f5",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 21,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_58a80cb908237e922e8103f1dea1a80514188cd33906c88c9a13e118dad2e249",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 22,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_60d03ef5ccc45dbea29123e77d1ee0e2d06167241070de2a6f65bfad1f575f53",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 71,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_7ad44c42677e01240b2021520ba409bfb64748d4b297f8160ade221312b68d8f",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 71,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_7d7d7f129534db780b398e1b4e76c3fd155a232754945a92d08a39402313bb24",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 18,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_8c165d91fb0e4a6417085685f350b6232c59cbb0d256c11d937d995e9275c6a6",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 71,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_8e9df31bce52259d639718dfcf904b096da0098bd13bca7313b8e2da4a5e5657",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 40,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_9732ca89eaf6448c0f3229e1cec3e2f7e6d3706fd0ab96a7a8f34c151279b7e6",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 10,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_9889c4132f6b79d32e01800340547fababc9773ea4cba9edc2be28a79dee358e",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 40,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_9c877b14f451c866a0a58c3a7991ce5b35931ee92c3ff307a08d7a48374cf966",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 12,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_a625645f9dc1dbcccabe8fd325d346604992b302e98160d4a1defacb3a43ef30",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 12,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_a7788160f5969c2216b62f04096efbf228922712f0e2d9c22a55cbbb694a9a19",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 54,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_a87f8244d08a76892d811b7d05ce39524253d32e8a49de901551f99d3f4a4ca3",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 71,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_c2f740407e047ba2254171764dd8f8ac12104110c141506672efe49afc0608eb",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 13,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_ca28601d5e20a5128d6b00a66e033e0eeaba4d65f5cf048aa2a01f6110d5a36a",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 71,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_cd425e01cc660e565957c1be1b1ce250836906e93bf8f062448b753168f89e68",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 2,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_de16fbc8d71023bb031afb75edc865cc12344ec3ee24e5237dbd73b3833bcf8d",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 22,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_e7711db9f8820f7dfb66a8e68cd18bf49c75045ec682337f82e047f93b892ebb",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 10,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_f154683e9352a08d451bd4bb8128619b083cd600c3d3dd7ec36b3aa32edc357d",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 8,
+      "failed_steps": 0
+    },
+    {
+      "evidence_id": "ev_fcb190dc1fad252efffa1054a63d9995e1dd967a6f89c92a1c885ad783e5105f",
+      "operation": "capture_browser_scenario",
+      "confidence": "observed",
+      "authority": "controlled-replay",
+      "steps": 71,
+      "failed_steps": 0
+    }
+  ],
+  "unavailable_source_assets": [
+    {
+      "path": "/data/file/4_1/1888912374_FKBsC4OE_KakaoTalk_20180728_2106449981.jpg",
+      "status": 404
+    },
+    {
+      "path": "/data/file/4_1/1888912374_1UQRNzVu_Resized_20180516_145834_39628129.jpg",
+      "status": 404
+    }
+  ],
+  "scope_limitations": [
+    "No original PHP/server source, database backup, member passwords or private posts were provided.",
+    "Original public content is read-only; all new records use the separately implemented backend.",
+    "Public media that the original server no longer serves cannot be reconstructed.",
+    "YouTube/external video embeds require the third-party service.",
+    "Hosted deployment was blocked by the executor network/DNS failure; D1/administrator bindings are not provisioned.",
+    "Local visual QA used an offline self-contained rendering, not the running HTTP application."
+  ],
+  "source_bundle_sha256": "4d654934c42d91518bf94f3dfe45bc0cef3f73aa6b8a92f6cd647623fc435181"
+}

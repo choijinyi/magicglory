@@ -1,0 +1,13 @@
+{
+  "name": "glorymagic-replica",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "admin:configure": "powershell.exe -NoProfile -File scripts/set-admin.ps1",
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/backend.test.mjs",
+    "validate": "node scripts/validate-artifact.mjs"
+  }
+}
