@@ -1,0 +1,6 @@
+dist/
+site.tar.gz
+runtime/
+data/optimized-assets.json
+.env*
+.dev.vars*
