@@ -4,13 +4,14 @@ REA로 `http://magicglory.com/`의 공개 화면을 수집한 프론트엔드와
 
 ## 실행
 
-Node.js 24.22.1 이상을 설치한 Windows에서 이 폴더를 연 뒤 실행합니다. 외부 npm 의존성을 설치할 필요가 없습니다.
+Node.js 24.22.1 이상을 설치한 Windows에서 이 폴더를 연 뒤 의존성을 설치하고 실행합니다.
 
 ```powershell
+npm install
 npm start
 ```
 
-브라우저에서 `http://127.0.0.1:4173`을 엽니다. 서버는 로컬 주소에만 바인딩합니다. 에이전트가 CYS 환경에서 서버를 시작할 때에는 프로젝트 운영 규약대로 `cys run --scoped -- npm start`를 사용합니다.
+브라우저에서 `http://127.0.0.1:4173`을 엽니다. 서버는 로컬 주소에만 바인딩합니다.
 
 현재 작업 컴퓨터에는 요청한 `admin1004` 관리자 계정을 설정했습니다. 비밀번호는 데이터베이스에 PBKDF2 해시로 저장하며 소스·압축파일에 인증 데이터를 넣지 않습니다. 이후 가입자는 일반 회원입니다. 원본 사이트의 기존 아이디·비밀번호는 이 복제본에서 사용할 수 없습니다. 관리자 로그인은 `/admin/login`, 전체 게시판 글 관리는 `/admin/boards`, 문의·회원 관리는 `/admin`입니다.
 
@@ -50,13 +51,13 @@ npm run validate
 
 `docs/desktop.png`, `docs/mobile.png`는 각각 1440×1000, 390×844의 홈 화면 확인 이미지입니다. 외부 동영상 요청을 제외한 자체 포함 HTML을 실제 Chromium으로 렌더링했습니다. 실행 중인 HTTP 사이트에 대한 전체 브라우저 검증을 뜻하지 않습니다.
 
-## 비공개 배포 상태와 차이
+## 운영 배포와 저장소
 
-비공개 사이트 프로젝트 `appgprj_6af0406df9b08191a250b178df246063`를 생성하고 `.openai/hosting.json`에 저장했습니다. 소스 업로드가 실행 환경의 네트워크 오류(`getaddrinfo() thread failed to start`)로 실패했으므로 실제 게시 URL은 아직 없습니다.
+현재 운영 배포는 https://magicglory.vercel.app 입니다. Vercel Functions와 Turso SQLite를 사용하며 정적 미디어 파일을 Vercel에서 직접 제공합니다. 운영 서버에서 공연영상·갤러리 썸네일 각각 8개와 관리자 로그인·글 등록·조회·삭제를 확인했습니다. 설정과 후이즈 도메인 연결은 `docs/VERCEL.md`를 참조하세요.
 
-`dist/server/index.js`는 Cloudflare Workers용 ESM입니다. 비공개 사이트의 바깥 접근 제어는 ChatGPT 플랫폼 인증을 유지하고, 사이트 안에서는 요청한 별도 관리자 아이디·비밀번호 로그인을 지원합니다. 배포 설정에 D1 `DB`와 `drizzle/` 마이그레이션을 선언했습니다. 관리자 `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, `ADMIN_PASSWORD_SALT`는 사이트의 비밀 환경변수로 설정했습니다. 아직 소스 업로드가 네트워크 오류로 막혀 실제 배포·운영 데이터베이스 검증은 완료하지 못했습니다. R2는 아직 연결되어 있지 않습니다.
+기존 비공개 Sites 배포는 https://glorymagic-replica-20261108.choijinyi.chatgpt.site 이며 `.openai/hosting.json`의 프로젝트와 연결됩니다. `dist/server/index.js`는 이 별도 Cloudflare Workers 대상의 ESM입니다. ChatGPT 접근 제어와 D1 `DB`, `drizzle/` 마이그레이션을 사용합니다.
 
-호스팅 번들은 크기를 제한하기 위해 일부 이미지를 WebP로 최적화하고 큰 파일을 원본 공개 서버에서 읽도록 구성했습니다. 완전히 독립적인 호스팅은 `public/` 파일을 R2 `BUCKET` 등에 이전하여 연결해야 합니다. 로컬 실행은 확보된 원본 이미지 파일을 그대로 제공합니다.
+로컬 SQLite, Sites D1, Vercel Turso는 별도의 데이터베이스입니다. Sites용 제한 크기 번들은 일부 큰 파일을 원본 공개 서버에서 읽는 구성을 유지하며, 새 Vercel 배포는 이미지 원본 서버에 의존하지 않습니다. 로컬 실행은 확보된 원본 이미지 파일을 그대로 제공합니다.
 
 확보하지 못한 원본 파일, 회원 정보, 비공개 게시물, 원래 PHP/DB 내부 구조, 관리자 전체 기능, 파일 첨부/다운로드의 접근 권한과 기존 이메일 발송은 동일함을 보증할 수 없습니다. 비밀번호 재설정 이메일은 연결된 메일 서비스가 없어 성공으로 표시하지 않습니다. 외부 YouTube 영상은 원본처럼 외부 서비스에 의존합니다.
 
