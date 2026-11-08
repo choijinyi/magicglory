@@ -1,4 +1,5 @@
 import {prepareMediaMarkup} from './media.js';
+import {prepareSiteMarkup,footerContact,familySiteLink} from './site-markup.js';
 const enc=new TextEncoder();
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const hex=b=>Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,'0')).join('');
@@ -11,7 +12,7 @@ const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let x=0;for(let i=0;
 class HttpError extends Error{constructor(status,message){super(message);this.status=status;}}
 const fail=(s,m)=>{throw new HttpError(s,m)};
 const json=(data,status=200,headers={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...headers}});
-const html=s=>new Response(prepareMediaMarkup(s.includes('src="/board-admin.js"')?s:s.replace('</body>','<script src="/board-admin.js" defer></script></body>')),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin'}});
+const html=s=>new Response(prepareSiteMarkup(prepareMediaMarkup(s.includes('src="/board-admin.js"')?s:s.replace('</body>','<script src="/board-admin.js" defer></script></body>'))),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin'}});
 const publicUser=u=>u?{id:u.id,username:u.username,email:u.email,name:u.name,role:u.role}:null;
 const get=async(db,sql,...args)=>db.prepare(sql).bind(...args).first();
 const all=async(db,sql,...args)=>(await db.prepare(sql).bind(...args).all()).results;
@@ -49,11 +50,22 @@ export function createApp(data){
  for(const [id,name]of [['event','이벤트'],['chulsuk','출석부']])if(!boards.has(id))boards.set(id,{id,name});
  for(const board of boards.values()){if(!posts.some(p=>p.board===board.id)&&pages['/bbs/board.php?bo_table='+board.id]){const id='original-'+board.id+'-page';board.staticPostId=id;originalById.set(id,{id,board:board.id,title:board.name,body:'',origin:'original',path:'/bbs/board.php?bo_table='+board.id,static_page:true,author_name:'최고관리자',created_at:''});}}
  const deletedIds=async env=>new Set((await all(env.DB,'SELECT post_id FROM deleted_original_posts')).map(r=>r.post_id));
- const shell=(title,content)=>`<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} | 글로리매직</title><link rel="stylesheet" href="/thema/Basic1/assets/bs3/css/bootstrap.min.css"><link rel="stylesheet" href="/replica.css"></head><body><header class="replica-header"><a href="/"><img src="/img/logo2.png" alt="글로리매직"></a><nav><a href="/">홈</a><a href="/bbs/board.php?bo_table=4_1">공지사항</a><a href="/bbs/board.php?bo_table=4_3">질문과 답변</a><a href="/bbs/qalist.php">1:1 문의</a><a href="/admin">관리</a></nav></header><main class="replica-page"><h1>${esc(title)}</h1>${content}</main><footer class="replica-footer">경기도 남양주시 미금로 128번길1 2층 · 02-932-0871 / 010-3365-0125<br>Copyright © 글로리매직 All rights reserved.</footer><script src="/replica.js" defer></script></body></html>`;
+ const shell=(title,content)=>`<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} | 글로리매직</title><link rel="stylesheet" href="/thema/Basic1/assets/bs3/css/bootstrap.min.css"><link rel="stylesheet" href="/replica.css"></head><body><header class="replica-header"><a href="/"><img src="/img/logo2.png" alt="글로리매직"></a><nav><a href="/">홈</a><a href="/bbs/board.php?bo_table=4_1">공지사항</a><a href="/bbs/board.php?bo_table=4_3">질문과 답변</a><a href="/bbs/qalist.php">1:1 문의</a><a href="/admin">관리</a></nav></header><main class="replica-page"><h1>${esc(title)}</h1>${content}</main><footer class="replica-footer">${footerContact}<br>${familySiteLink}<br>Copyright © 글로리매직 All rights reserved.</footer><script src="/replica.js" defer></script></body></html>`;
  async function handler(req,env){
   const u=new URL(req.url);const p=u.pathname;
   if(p==='/api/health')return json({ok:!!env.DB,mode:env.MODE,storage:env.DB?'configured':'missing',snapshotPages:Object.keys(pages).length,originalPosts:posts.length},env.DB?200:503);
   if(assets[p]){const a=assets[p];if(a.remote){const cached=env.BUCKET?await env.BUCKET.get(p.slice(1)):null;if(cached)return new Response(req.method==='HEAD'?null:cached.body,{headers:{'Content-Type':cached.httpMetadata?.contentType||a.mime,'Cache-Control':'public,max-age=86400','X-Content-Type-Options':'nosniff'}});const r=await fetch(a.remote,{redirect:'error',signal:AbortSignal.timeout(15000)});if(!r.ok)return new Response('Asset unavailable',{status:r.status});return new Response(req.method==='HEAD'?null:r.body,{headers:{'Content-Type':r.headers.get('content-type')||a.mime,'Cache-Control':'public,max-age=3600','X-Content-Type-Options':'nosniff'}});}const bytes=Uint8Array.from(atob(a.base64),c=>c.charCodeAt(0));return new Response(req.method==='HEAD'?null:bytes,{headers:{'Content-Type':a.mime,'Cache-Control':'public,max-age=86400','X-Content-Type-Options':'nosniff'}});}
+  if(p==='/bbs/login_check.php'&&req.method==='POST'){
+   if(!req.headers.get('content-type')?.includes('application/x-www-form-urlencoded'))fail(415,'로그인 입력 양식을 확인해 주세요.');
+   const raw=await req.text();if(enc.encode(raw).byteLength>4096)fail(413,'입력 내용이 너무 큽니다.');
+   const form=new URLSearchParams(raw),headers=new Headers(req.headers);headers.set('content-type','application/json');headers.delete('content-length');
+   const login=await handler(new Request(new URL('/api/login',u),{method:'POST',headers,body:JSON.stringify({username:form.get('mb_id')??form.get('username'),password:form.get('mb_password')??form.get('password')})}),env);
+   const result=await login.json();
+   if(!login.ok)return new Response(shell('로그인 안내',`<p role="alert">${esc(result.error)}</p><a href="/admin/login">다시 로그인</a>`),{status:login.status,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}});
+   const responseHeaders=new Headers({'Location':result.redirect||(result.user?.role==='admin'?'/admin/boards':'/'),'Cache-Control':'no-store'});
+   const cookie=login.headers.get('set-cookie');if(cookie)responseHeaders.set('Set-Cookie',cookie);
+   return new Response(null,{status:303,headers:responseHeaders});
+  }
   if(p.startsWith('/api/')){
    if(!env.DB)fail(503,'데이터베이스 연결 설정이 필요합니다.');
    if(env.MODE==='vercel'&&!await configuredAdmin(env))fail(503,'관리자 계정 배포 설정이 필요합니다.');
@@ -102,7 +114,7 @@ export function createApp(data){
   }
   if(req.method!=='GET'&&req.method!=='HEAD')return html(shell('요청 안내','<p>이 페이지는 화면의 입력 양식으로 이용해 주세요.</p><a href="/">홈으로</a>'));
   if(p==='/admin/boards')return html(shell('게시판 관리','<div id="board-manager"></div>'));
-  if(p==='/admin/login')return html(shell('관리자 로그인','<form id="admin-login"><label>관리자 아이디<input name="username" required autocomplete="username"></label><label>비밀번호<input name="password" type="password" required autocomplete="current-password"></label><button type="submit">관리자 로그인</button><p class="form-message" role="status"></p></form>'));
+  if(p==='/admin/login')return html(shell('관리자 로그인','<form id="admin-login" action="/bbs/login_check.php" method="post"><label>관리자 아이디<input name="username" required autocomplete="username"></label><label>비밀번호<input name="password" type="password" required autocomplete="current-password"></label><button type="submit">관리자 로그인</button><p class="form-message" role="status"></p></form>'));
   if(p==='/admin')return html(shell('관리자',`<div class="replica-actions"><a class="replica-button" href="/admin/boards">게시판 글 관리</a></div><div id="admin-app"></div>`));
   if(p==='/bbs/qalist.php')return html(shell('1:1 문의','<div id="inquiry-app"></div>'));
   if(p==='/bbs/write.php')return html(shell('글쓰기',`<form id="post-editor"><input type="hidden" name="board" value="${esc(boardId(u.searchParams.get('bo_table')||'4_3'))}"><label>제목<input name="title" maxlength="200" required></label><label>내용<textarea name="body" rows="14" maxlength="50000" required></textarea></label><button>등록</button><p class="form-message" role="status"></p></form>`));

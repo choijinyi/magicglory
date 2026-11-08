@@ -10,7 +10,7 @@
    const item=a.closest('tr,li,.list-item,.post-row,.list-row,.wr-row,.post-wrap,.gallery-item,.media');if(item)item.remove();else a.hidden=true;
   }
  }
- async function manager(){const root=document.querySelector('#board-manager');if(!root)return;if(!me||me.role!=='admin'){root.innerHTML='<p>관리자 로그인이 필요합니다.</p><a href="/bbs/login.php">로그인</a>';return;}
+ async function manager(){const root=document.querySelector('#board-manager');if(!root)return;if(!me||me.role!=='admin'){root.innerHTML='<p>관리자 로그인이 필요합니다.</p><a href="/admin/login">관리자 로그인</a>';return;}
   const selected=params.get('board')||boards[0]?.id||'4_1';let page=Math.max(1,Number(params.get('page'))||1);const board=boards.find(b=>b.id===selected);
   root.innerHTML='<label>게시판 선택<select id="manage-board" aria-label="게시판 선택">'+boards.map(b=>`<option value="${esc(b.id)}"${b.id===selected?' selected':''}>${esc(b.name)}</option>`).join('')+'</select></label><div class="replica-actions"><a class="replica-button" href="/bbs/write.php?bo_table='+encodeURIComponent(selected)+'">새 글 작성</a><a href="/bbs/board.php?bo_table='+encodeURIComponent(selected)+'">게시판 보기</a></div><p id="board-admin-message" role="status"></p><div id="manage-posts"></div>';
   root.querySelector('select').addEventListener('change',e=>{location.href='/admin/boards?board='+encodeURIComponent(e.target.value);});

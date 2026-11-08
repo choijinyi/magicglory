@@ -25,7 +25,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('submit',e=>{
  const f=e.target;if(!(f instanceof HTMLFormElement))return;
- if(['basic_outlogin','sidebar_login_form','flogin'].includes(f.name)||f.action.includes('login_check.php')){e.preventDefault();busy(f,async()=>{if(authMode==='chatgpt'){location.href=loginLink();return;}const v=values(f);const d=await api('/api/login','POST',{username:v.mb_id,password:v.mb_password});if(d.redirect)location.href=d.redirect;else location.href='/';});return;}
+ if(['basic_outlogin','sidebar_login_form','flogin'].includes(f.name)||f.action.includes('login_check.php')){if(f.id==='admin-login')return;e.preventDefault();busy(f,async()=>{if(authMode==='chatgpt'){location.href=loginLink();return;}const v=values(f);const d=await api('/api/login','POST',{username:v.mb_id,password:v.mb_password});location.href=d.redirect||(d.user?.role==='admin'?'/admin/boards':'/');});return;}
  if(f.name==='fregister'){e.preventDefault();if(!f.querySelector('[name=agree]:checked')||!f.querySelector('[name=agree2]:checked')){message(f,'이용약관과 개인정보처리방침에 동의해 주세요.');return;}location.href='/bbs/register_form.php';return;}
  if(f.id==='member-register'){e.preventDefault();busy(f,async()=>{if(authMode==='chatgpt'){location.href=loginLink();return;}await api('/api/register','POST',values(f));location.href='/bbs/login.php?registered=1';});return;}
  if(f.name==='fpasswordlost'){e.preventDefault();busy(f,async()=>{await api('/api/password-reset','POST',{email:values(f).mb_email||''});});return;}
@@ -53,7 +53,18 @@ async function loadInquiries(admin=false){const el=qs(admin?'#admin-app':'#inqui
  el.querySelectorAll('[data-inquiry]').forEach(f=>f.addEventListener('submit',e=>{e.preventDefault();busy(f,async()=>{await api('/api/inquiries/'+f.dataset.inquiry,'PATCH',values(f));loadInquiries(true);});}));
  if(admin){const users=await api('/api/admin/users');const box=document.createElement('section');box.innerHTML='<h2>회원 관리</h2>'+users.items.map(u=>`<p>${esc(u.name)} · ${esc(u.username||u.email)} · ${esc(u.role)}</p>`).join('');el.append(box);}
  }catch(e){el.textContent=e.message;}}
-async function init(){try{const d=await api('/api/me');current=d.user;authMode=d.authMode;
+function updateAccountNavigation(){
+ if(!current)return;
+ const destination=current.role==='admin'?'/admin/boards':'/bbs/qalist.php';
+ const label=current.role==='admin'?`관리자 (${current.username})`:`${current.name} 님 로그인 중`;
+ for(const link of document.querySelectorAll('a[href]')){
+  const href=link.getAttribute('href');
+  if(new URL(link.href,location.href).pathname==='/bbs/login.php'||(href==='#'&&link.textContent.trim()==='로그인')){link.href=destination;link.textContent=label;}
+ }
+ const nav=qs('.replica-header nav');
+ if(nav){const account=document.createElement('a');account.href=destination;account.textContent=label;nav.append(account);const logout=document.createElement('button');logout.type='button';logout.textContent='로그아웃';logout.addEventListener('click',async()=>{try{const r=await api('/api/logout','POST',{});location.href=r.redirect||'/';}catch(e){toast(e.message);}});nav.append(logout);}
+}
+async function init(){try{const d=await api('/api/me');current=d.user;authMode=d.authMode;updateAccountNavigation();
  if(current){document.querySelectorAll('form[action*=login_check]').forEach(f=>{f.innerHTML=`<div class="replica-live-login"><strong>${esc(current.name)}</strong> 님<br><a href="/bbs/qalist.php">내 문의</a> · <a href="/bbs/write.php?bo_table=4_3">글쓰기</a>${current.role==='admin'?' · <a href="/admin">관리자</a>':''}<br><button type="button" class="btn btn-default btn-sm" data-logout>로그아웃</button></div>`;f.querySelector('[data-logout]').addEventListener('click',async()=>{const r=await api('/api/logout','POST',{});location.href=r.redirect||'/';});});}
  else if(authMode==='chatgpt'){document.querySelectorAll('form[action*=login_check]').forEach(f=>{f.innerHTML=`<a class="btn btn-black btn-block" href="${loginLink()}" target="_top">ChatGPT로 로그인</a>`;});}
  if(qs('#member-register')&&authMode==='chatgpt'){qs('#member-register').innerHTML=current?`<p>${esc(current.name)} 님의 회원 정보가 등록되어 있습니다.</p><a href="/">홈으로</a>`:`<a class="replica-button" href="${loginLink()}" target="_top">ChatGPT로 회원 등록</a>`;}
