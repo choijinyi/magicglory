@@ -1,0 +1,11 @@
+.git
+.env*
+.dev.vars*
+runtime
+dist
+vercel-public
+node_modules
+tests
+docs
+data/optimized-assets.json
+site.tar.gz

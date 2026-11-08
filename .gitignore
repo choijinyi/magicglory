@@ -6,3 +6,7 @@ data/optimized-assets.json
 .dev.vars*
 vercel-public/
 .vercel/
+node_modules/
+
+.vercel
+.env*

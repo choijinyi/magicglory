@@ -16,6 +16,12 @@ const publicUser=u=>u?{id:u.id,username:u.username,email:u.email,name:u.name,rol
 const get=async(db,sql,...args)=>db.prepare(sql).bind(...args).first();
 const all=async(db,sql,...args)=>(await db.prepare(sql).bind(...args).all()).results;
 const run=async(db,sql,...args)=>db.prepare(sql).bind(...args).run();
+async function configuredAdmin(env){
+ if(!env.ADMIN_USERNAME||!env.ADMIN_PASSWORD_HASH||!env.ADMIN_PASSWORD_SALT)return false;
+ const existing=await get(env.DB,'SELECT id FROM users WHERE username=?',env.ADMIN_USERNAME);
+ if(!existing)await run(env.DB,"INSERT OR IGNORE INTO users(id,username,email,name,password_hash,salt,role,created_at) VALUES(?,?,?,?,?,?,'admin',?)",crypto.randomUUID(),env.ADMIN_USERNAME,'','관리자',env.ADMIN_PASSWORD_HASH,env.ADMIN_PASSWORD_SALT,now());
+ return true;
+}
 const field=(obj,key,min=1,max=1000)=>{const v=typeof obj[key]==='string'?obj[key].trim():'';if(v.length<min||v.length>max)fail(400,`${key}: ${min}~${max}자로 입력해 주세요.`);return v;};
 const boardId=v=>{if(!/^[\w-]{1,32}$/.test(v||''))fail(400,'게시판을 확인해 주세요.');return v;};
 const writeBoards=new Set(['4_3','event','chulsuk']);
@@ -50,6 +56,7 @@ export function createApp(data){
   if(assets[p]){const a=assets[p];if(a.remote){const cached=env.BUCKET?await env.BUCKET.get(p.slice(1)):null;if(cached)return new Response(req.method==='HEAD'?null:cached.body,{headers:{'Content-Type':cached.httpMetadata?.contentType||a.mime,'Cache-Control':'public,max-age=86400','X-Content-Type-Options':'nosniff'}});const r=await fetch(a.remote,{redirect:'error',signal:AbortSignal.timeout(15000)});if(!r.ok)return new Response('Asset unavailable',{status:r.status});return new Response(req.method==='HEAD'?null:r.body,{headers:{'Content-Type':r.headers.get('content-type')||a.mime,'Cache-Control':'public,max-age=3600','X-Content-Type-Options':'nosniff'}});}const bytes=Uint8Array.from(atob(a.base64),c=>c.charCodeAt(0));return new Response(req.method==='HEAD'?null:bytes,{headers:{'Content-Type':a.mime,'Cache-Control':'public,max-age=86400','X-Content-Type-Options':'nosniff'}});}
   if(p.startsWith('/api/')){
    if(!env.DB)fail(503,'데이터베이스 연결 설정이 필요합니다.');
+   if(env.MODE==='vercel'&&!await configuredAdmin(env))fail(503,'관리자 계정 배포 설정이 필요합니다.');
    if(!['GET','HEAD'].includes(req.method)){if(req.headers.get('origin')!==u.origin)fail(403,'동일한 사이트에서 요청해 주세요.');await rate(req,env,'write',60);}
    const me=await user(req,env);const requireUser=()=>{if(!me)fail(401,'로그인이 필요합니다.');return me;};const requireAdmin=()=>{requireUser();if(me.role!=='admin')fail(403,'관리자 권한이 필요합니다.');};
    if(p==='/api/me'&&req.method==='GET')return json({user:publicUser(me),authMode:env.MODE==='hosted'?(env.ADMIN_USERNAME?'hybrid':'chatgpt'):'local'});
@@ -64,7 +71,7 @@ export function createApp(data){
    }
    if(p==='/api/login'&&req.method==='POST'){
     if(env.MODE==='hosted'&&!env.ADMIN_USERNAME)return json({redirect:'/signin-with-chatgpt?return_to=%2F'});
-    if(env.MODE==='hosted'&&env.ADMIN_USERNAME&&env.ADMIN_PASSWORD_HASH&&env.ADMIN_PASSWORD_SALT){const existing=await get(env.DB,'SELECT id FROM users WHERE username=?',env.ADMIN_USERNAME);if(!existing)await run(env.DB,"INSERT OR IGNORE INTO users(id,username,email,name,password_hash,salt,role,created_at) VALUES(?,?,?,?,?,?,'admin',?)",crypto.randomUUID(),env.ADMIN_USERNAME,'','관리자',env.ADMIN_PASSWORD_HASH,env.ADMIN_PASSWORD_SALT,now());}
+    if(env.MODE==='hosted')await configuredAdmin(env);
     await rate(req,env,'login',10);const b=await body(req);const candidate=await get(env.DB,'SELECT * FROM users WHERE username=?',field(b,'username',1,32));const salt=candidate?.salt||'0'.repeat(64);const hash=await passwordHash(field(b,'password',1,128),salt);
     if(!candidate||!candidate.password_hash||!safeEqual(hash,candidate.password_hash)||(env.MODE==='hosted'&&(candidate.role!=='admin'||candidate.username!==env.ADMIN_USERNAME)))fail(401,'아이디 또는 비밀번호를 확인해 주세요.');const token=random();await run(env.DB,'INSERT INTO sessions(token_hash,user_id,expires_at) VALUES(?,?,?)',await sha(token),candidate.id,Date.now()+86400000);
     return json({user:publicUser(candidate)},200,{'Set-Cookie':`gm_session=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=86400${u.protocol==='https:'?'; Secure':''}`});
