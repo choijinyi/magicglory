@@ -8,6 +8,14 @@ const message=(f,t)=>{let p=f.querySelector('.form-message');if(!p){p=document.c
 const busy=async(f,fn)=>{const b=f.querySelector('button[type=submit],button');if(b)b.disabled=true;try{await fn();}catch(e){message(f,e.message);}finally{if(b)b.disabled=false;}};
 const loginLink=()=>authMode==='chatgpt'?'/signin-with-chatgpt?return_to='+encodeURIComponent(location.pathname+location.search):'/bbs/login.php';
 const postLink=p=>p.origin==='original'?p.path:'/post?id='+encodeURIComponent(p.id);
+for(const poster of document.querySelectorAll('.replica-video-preview')){
+ const image=poster.querySelector('img');image?.addEventListener('error',()=>{if(!image.src.endsWith('/media/video-unavailable.svg'))image.src='/media/video-unavailable.svg';});
+ if(poster.closest('a'))continue;
+ const id=poster.dataset.youtubeId;poster.setAttribute('role','button');poster.tabIndex=0;poster.setAttribute('aria-label',(poster.dataset.videoTitle||'공연영상')+' 재생');
+ const watch=document.createElement('a');watch.className='replica-watch-link';watch.href='https://www.youtube.com/watch?v='+id;watch.target='_blank';watch.rel='noopener';watch.textContent='YouTube에서 보기';poster.after(watch);
+ const play=()=>{const iframe=document.createElement('iframe');iframe.src='https://www.youtube.com/embed/'+id+'?rel=0&autoplay=1&origin='+encodeURIComponent(location.origin);iframe.title=poster.dataset.videoTitle||'공연영상';iframe.referrerPolicy='strict-origin-when-cross-origin';iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';iframe.allowFullscreen=true;iframe.className='replica-video-iframe';poster.replaceWith(iframe);};
+ poster.addEventListener('click',play);poster.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();play();}});
+}
 function listing(items){return '<ul class="replica-list">'+items.map(p=>`<li><a href="${esc(postLink(p))}">${esc(p.title)}</a><small>${esc(p.author_name||'회원')} ${esc(p.created_at?.slice(0,10)||'')}</small></li>`).join('')+'</ul>';}
 document.addEventListener('click',e=>{
  const a=e.target.closest('a');if(!a)return;

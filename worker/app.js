@@ -1,3 +1,4 @@
+import {prepareMediaMarkup} from './media.js';
 const enc=new TextEncoder();
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const hex=b=>Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,'0')).join('');
@@ -10,7 +11,7 @@ const safeEqual=(a,b)=>{if(a.length!==b.length)return false;let x=0;for(let i=0;
 class HttpError extends Error{constructor(status,message){super(message);this.status=status;}}
 const fail=(s,m)=>{throw new HttpError(s,m)};
 const json=(data,status=200,headers={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store',...headers}});
-const html=s=>new Response(s.includes('src="/board-admin.js"')?s:s.replace('</body>','<script src="/board-admin.js" defer></script></body>'),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'same-origin'}});
+const html=s=>new Response(prepareMediaMarkup(s.includes('src="/board-admin.js"')?s:s.replace('</body>','<script src="/board-admin.js" defer></script></body>')),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin'}});
 const publicUser=u=>u?{id:u.id,username:u.username,email:u.email,name:u.name,role:u.role}:null;
 const get=async(db,sql,...args)=>db.prepare(sql).bind(...args).first();
 const all=async(db,sql,...args)=>(await db.prepare(sql).bind(...args).all()).results;

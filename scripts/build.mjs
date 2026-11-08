@@ -6,7 +6,8 @@ function scan(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){cons
 if(embeddedBytes+Math.ceil(a.base64.length*3/4)>5500000&&!/\.(css|js|woff2?|ttf)$/.test(k)&&!k.startsWith('/img/'))files[k]={mime:a.mime,remote:'http://magicglory.com'+k};else{files[k]=a;embeddedBytes+=Math.ceil(a.base64.length*3/4);}
 }}}
 scan('public');const data={pages:JSON.parse(fs.readFileSync('data/pages.json','utf8')),imported:JSON.parse(fs.readFileSync('data/imported-posts.json','utf8')),assets:files};
-const app=fs.readFileSync('worker/app.js','utf8').replace(/^export /gm,'');
+const media=fs.readFileSync('worker/media.js','utf8').replace(/^export /gm,'');
+const app=media+'\n'+fs.readFileSync('worker/app.js','utf8').replace(/^import .*media\.js';\r?\n/m,'').replace(/^export /gm,'');
 const output=app+'\nconst application=createApp('+JSON.stringify(data)+');\nexport default {fetch(request,env,ctx){return application.fetch(request,{...env,MODE:"hosted"},ctx)}};\n';
 fs.mkdirSync('dist/server',{recursive:true});fs.mkdirSync('dist/.openai',{recursive:true});fs.writeFileSync('dist/server/index.js',output);fs.copyFileSync('.openai/hosting.json','dist/.openai/hosting.json');
 fs.cpSync('migrations','dist/migrations',{recursive:true});

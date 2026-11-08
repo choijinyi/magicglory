@@ -4,3 +4,5 @@ runtime/
 data/optimized-assets.json
 .env*
 .dev.vars*
+vercel-public/
+.vercel/
